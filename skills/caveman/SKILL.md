@@ -58,8 +58,6 @@ Example — "Explain database connection pooling."
 - wenyan-full: "池蓄已開之連，不逐請而新開，省握手之費。"
 - wenyan-ultra: "池蓄連，免逐請新開，省握手。"
 
-`full` and `ultra` lose *which* table, *which* DB, and *how* dedup works. `precise` keeps all three at the cost of ~20 extra tokens — worth it when a wrong noun corrupts data.
-
 ## Auto-Clarity
 
 Drop caveman when:
