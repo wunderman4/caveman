@@ -13,14 +13,14 @@
 //      - $XDG_CONFIG_HOME/caveman/config.json (any platform, if set)
 //      - ~/.config/caveman/config.json (macOS / Linux fallback)
 //      - %APPDATA%\caveman\config.json (Windows fallback)
-//   4. 'full'
+//   4. 'precise'
 
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
 const VALID_MODES = [
-  'off', 'lite', 'full', 'ultra',
+  'off', 'lite', 'precise', 'full', 'ultra',
   'wenyan-lite', 'wenyan', 'wenyan-full', 'wenyan-ultra',
   'commit', 'review', 'compress'
 ];
@@ -106,7 +106,7 @@ function getDefaultMode() {
   if (userMode) return userMode;
 
   // 4. Default
-  return 'full';
+  return 'precise';
 }
 
 // Symlink-safe flag file write.
