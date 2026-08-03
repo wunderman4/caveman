@@ -9,6 +9,11 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
+# Mirrors the getDefaultMode() fallback in src/hooks/caveman-config.js. These
+# tests run against a temp HOME with no config, so activation resolves to it.
+# tests/test_level_wiring.js asserts the fallback and SKILL.md agree.
+DEFAULT_MODE = "precise"
+
 
 class HookScriptTests(unittest.TestCase):
     def run_cmd(self, cmd, home, extra_env=None):
@@ -158,7 +163,7 @@ class HookScriptTests(unittest.TestCase):
             result = self.run_cmd(["node", "src/hooks/caveman-activate.js"], home)
 
             self.assertNotIn("STATUSLINE SETUP NEEDED", result.stdout)
-            self.assertEqual((claude_dir / ".caveman-active").read_text(), "full")
+            self.assertEqual((claude_dir / ".caveman-active").read_text(), DEFAULT_MODE)
 
     # Regression for #587/#589 — hook at <root>/src/hooks/ must resolve SKILL.md
     # at <root>/skills/caveman/, not the nonexistent <root>/src/skills/.
@@ -171,8 +176,8 @@ class HookScriptTests(unittest.TestCase):
 
             # Intensity table exists only in SKILL.md, never in the fallback
             self.assertIn("## Intensity", result.stdout)
-            # Default mode is full — table filtered to the active level's row
-            self.assertIn("| **full** |", result.stdout)
+            # Table is filtered to the active level's row — the default one here
+            self.assertIn("| **" + DEFAULT_MODE + "** |", result.stdout)
             self.assertNotIn("| **lite** |", result.stdout)
 
     def test_activate_finds_skill_beside_config_dir_hooks(self):

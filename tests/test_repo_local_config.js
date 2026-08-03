@@ -2,7 +2,7 @@
 // Tests for repo-local config resolution in getDefaultMode().
 // Covers the resolution-order contract:
 //   env CAVEMAN_DEFAULT_MODE → repo-local (.caveman/config.json or .caveman.json,
-//   walking up to filesystem root) → user config → 'full'.
+//   walking up to filesystem root) → user config → DEFAULT_MODE.
 //
 // Run: node tests/test_repo_local_config.js
 
@@ -19,6 +19,10 @@ process.env.XDG_CONFIG_HOME = tmpHome;
 delete process.env.CAVEMAN_DEFAULT_MODE;
 
 const { getDefaultMode, findRepoConfigPath } = require('../src/hooks/caveman-config');
+
+// The fallback getDefaultMode() lands on with no env, no repo config, and no
+// user config. Kept as a constant so a default change is one edit, not four.
+const DEFAULT_MODE = 'precise';
 
 let passed = 0;
 let failed = 0;
@@ -45,9 +49,9 @@ function test(name, fn) {
 
 console.log('repo-local config resolution tests\n');
 
-test('returns "full" when no env, no repo config, no user config', (tmp) => {
+test(`returns "${DEFAULT_MODE}" when no env, no repo config, no user config`, (tmp) => {
   process.chdir(tmp);
-  assert.strictEqual(getDefaultMode(), 'full');
+  assert.strictEqual(getDefaultMode(), DEFAULT_MODE);
 });
 
 test('reads .caveman/config.json in cwd', (tmp) => {
@@ -127,14 +131,14 @@ test('invalid mode in repo config falls through to default', (tmp) => {
   fs.writeFileSync(path.join(tmp, '.caveman.json'),
     JSON.stringify({ defaultMode: 'definitely-not-a-mode' }));
   process.chdir(tmp);
-  assert.strictEqual(getDefaultMode(), 'full');
+  assert.strictEqual(getDefaultMode(), DEFAULT_MODE);
 });
 
 test('malformed JSON in repo config falls through to default', (tmp) => {
   fs.mkdirSync(path.join(tmp, '.caveman'));
   fs.writeFileSync(path.join(tmp, '.caveman', 'config.json'), '{ not json');
   process.chdir(tmp);
-  assert.strictEqual(getDefaultMode(), 'full');
+  assert.strictEqual(getDefaultMode(), DEFAULT_MODE);
 });
 
 test('refuses symlinked .caveman.json (symmetric with readFlag policy)', (tmp) => {
@@ -148,7 +152,7 @@ test('refuses symlinked .caveman.json (symmetric with readFlag policy)', (tmp) =
     return;
   }
   process.chdir(tmp);
-  assert.strictEqual(getDefaultMode(), 'full');
+  assert.strictEqual(getDefaultMode(), DEFAULT_MODE);
 });
 
 test('findRepoConfigPath returns null outside any repo', (tmp) => {

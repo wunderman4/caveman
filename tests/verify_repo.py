@@ -15,6 +15,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Mirrors the getDefaultMode() fallback in src/hooks/caveman-config.js.
+# tests/test_level_wiring.js asserts that fallback and SKILL.md agree.
+DEFAULT_MODE = "precise"
+
 
 class CheckFailure(RuntimeError):
     pass
@@ -293,7 +297,10 @@ def verify_hook_install_flow() -> None:
         )
         ensure("CAVEMAN MODE ACTIVE" in activate.stdout, "activation output missing caveman banner")
         ensure("STATUSLINE SETUP NEEDED" not in activate.stdout, "activation should stay quiet when custom statusline exists")
-        ensure((claude_dir / ".caveman-active").read_text(encoding="utf-8") == "full", "activation flag should default to full")
+        ensure(
+            (claude_dir / ".caveman-active").read_text(encoding="utf-8") == DEFAULT_MODE,
+            f"activation flag should default to {DEFAULT_MODE}",
+        )
 
         # Test configurable default mode via CAVEMAN_DEFAULT_MODE env var
         activate_custom = run(

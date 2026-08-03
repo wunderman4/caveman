@@ -23,6 +23,15 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TRACKER = REPO_ROOT / "src" / "hooks" / "caveman-mode-tracker.js"
 
+# Every natural-language activation and bare /caveman routes through
+# getDefaultMode(), so these tests assert the resolved default rather than a
+# literal level. The tests run with HOME pointed at a temp dir and no repo-local
+# config, so that resolves to the hardcoded fallback in
+# src/hooks/caveman-config.js. Keep this in step with that fallback;
+# tests/test_level_wiring.js asserts the fallback and SKILL.md's documented
+# default agree.
+DEFAULT_MODE = "precise"
+
 
 class ModeTrackerTests(unittest.TestCase):
     def setUp(self):
@@ -100,7 +109,7 @@ class ModeTrackerTests(unittest.TestCase):
         # deactivation regex matched "caveman and stop" and deleted the flag.
         self.flag.write_text("full")
         self.send("enable caveman and stop apologizing")
-        self.assertEqual(self.flag_value(), "full")
+        self.assertEqual(self.flag_value(), DEFAULT_MODE)
 
     def test_question_does_not_activate(self):
         self.send("what is caveman mode?")
@@ -114,23 +123,23 @@ class ModeTrackerTests(unittest.TestCase):
 
     def test_unscoped_brevity_activates(self):
         self.send("be brief")
-        self.assertEqual(self.flag_value(), "full")
+        self.assertEqual(self.flag_value(), DEFAULT_MODE)
 
     def test_activate_caveman_still_works(self):
         self.send("activate caveman")
-        self.assertEqual(self.flag_value(), "full")
+        self.assertEqual(self.flag_value(), DEFAULT_MODE)
 
     def test_turn_on_caveman_mode_still_works(self):
         self.send("turn on caveman mode")
-        self.assertEqual(self.flag_value(), "full")
+        self.assertEqual(self.flag_value(), DEFAULT_MODE)
 
     def test_talk_like_caveman_still_works(self):
         self.send("talk like a caveman")
-        self.assertEqual(self.flag_value(), "full")
+        self.assertEqual(self.flag_value(), DEFAULT_MODE)
 
     def test_bare_caveman_mode_still_works(self):
         self.send("caveman mode")
-        self.assertEqual(self.flag_value(), "full")
+        self.assertEqual(self.flag_value(), DEFAULT_MODE)
 
     # ── slash commands ──────────────────────────────────────────────────
 
