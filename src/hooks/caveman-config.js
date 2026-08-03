@@ -25,6 +25,52 @@ const VALID_MODES = [
   'commit', 'review', 'compress'
 ];
 
+// Per-turn reinforcement text, one entry per prose intensity level.
+//
+// This has to be level-specific. A single hardcoded line phrased for `full`
+// ("drop articles") actively contradicts `lite`, `precise`, and `ste200`, which
+// all keep articles on purpose — the SessionStart ruleset says keep, the
+// per-turn reminder said drop, and the reminder wins by recency.
+//
+// Deliberately short. SKILL.md is the source of truth for the full ruleset and
+// SessionStart injects it once; this fires on every user message, so it carries
+// the level's headline rules only. Injecting a whole intensity row here would
+// cost more tokens per turn than caveman saves.
+const MODE_REMINDERS = {
+  lite:
+    'Drop filler and hedging. Keep articles and full sentences.',
+  precise:
+    'Drop filler and hedging. KEEP articles for structural clarity. ' +
+    'Name technical nouns exactly (tables/endpoints/fields), use specific technical verbs. ' +
+    'Priority is zero ambiguity, not fewest words.',
+  ste200:
+    'Drop filler and hedging. KEEP articles. One instruction per sentence. ' +
+    'Active voice with the actor named. Noun clusters max 3 words. ' +
+    'One operation keeps one verb for the whole reply. No gerund as a modifier. ' +
+    'Priority is zero ambiguity, not fewest words.',
+  full:
+    'Drop articles, filler, pleasantries, hedging. Fragments OK. ' +
+    'Standard acronyms OK; no invented abbreviations.',
+  ultra:
+    'Drop articles, filler, conjunctions where cause and effect stay clear. ' +
+    'One word when one word is enough. State each fact once. ' +
+    'No invented abbreviations, no arrows.',
+  'wenyan-lite':
+    'Semi-classical Chinese register. Drop filler and hedging, keep grammatical structure.',
+  'wenyan-full':
+    'Fully 文言文. Classical sentence patterns, particles, omitted subjects. Maximum terseness.',
+  'wenyan-ultra':
+    'Fully 文言文, extreme compression. Classical feel, fewest characters.'
+};
+
+// Resolve the reminder for a mode. Maps the `wenyan` alias the same way
+// caveman-activate.js does, and falls back to `full` for anything unknown so a
+// new level added to VALID_MODES without a reminder still reinforces something.
+function reminderFor(mode) {
+  const label = mode === 'wenyan' ? 'wenyan-full' : mode;
+  return MODE_REMINDERS[label] || MODE_REMINDERS.full;
+}
+
 function getConfigDir() {
   if (process.env.XDG_CONFIG_HOME) {
     return path.join(process.env.XDG_CONFIG_HOME, 'caveman');
@@ -345,4 +391,4 @@ function readHistory(filePath) {
   }
 }
 
-module.exports = { getDefaultMode, getConfigDir, getConfigPath, findRepoConfigPath, VALID_MODES, safeWriteFlag, readFlag, appendFlag, readHistory, recordModeChange, MODE_LOG_BASENAME };
+module.exports = { getDefaultMode, getConfigDir, getConfigPath, findRepoConfigPath, VALID_MODES, MODE_REMINDERS, reminderFor, safeWriteFlag, readFlag, appendFlag, readHistory, recordModeChange, MODE_LOG_BASENAME };

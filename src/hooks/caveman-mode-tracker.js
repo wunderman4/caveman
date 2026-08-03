@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { execFileSync } = require('child_process');
-const { getDefaultMode, safeWriteFlag, readFlag, recordModeChange, VALID_MODES } = require('./caveman-config');
+const { getDefaultMode, safeWriteFlag, readFlag, recordModeChange, reminderFor, VALID_MODES } = require('./caveman-config');
 
 // Modes handled by their own slash commands (/caveman-commit, etc.) — not
 // selectable via /caveman <arg>.
@@ -195,7 +195,7 @@ process.stdin.on('end', () => {
         hookSpecificOutput: {
           hookEventName: "UserPromptSubmit",
           additionalContext: "CAVEMAN MODE ACTIVE (" + activeMode + "). " +
-            "Drop articles/filler/pleasantries/hedging. Fragments OK. " +
+            reminderFor(activeMode) + " " +
             "Code/commits/security: write normal."
         }
       }));

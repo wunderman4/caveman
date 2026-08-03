@@ -21,7 +21,7 @@ const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'caveman-levelwiring-'));
 process.env.XDG_CONFIG_HOME = tmpHome;
 delete process.env.CAVEMAN_DEFAULT_MODE;
 
-const { VALID_MODES } = require('../src/hooks/caveman-config');
+const { VALID_MODES, MODE_REMINDERS, reminderFor, getDefaultMode } = require('../src/hooks/caveman-config');
 
 const repoRoot = path.join(__dirname, '..');
 const read = (rel) => fs.readFileSync(path.join(repoRoot, rel), 'utf8');
@@ -79,6 +79,42 @@ test('the documented default is a real selectable mode', () => {
   const m = skill.match(/^Default:\s*\*\*(\S+?)\*\*/m);
   assert.ok(m, 'no "Default: **level**" line in skills/caveman/SKILL.md');
   assert.ok(VALID_MODES.includes(m[1]), `documented default "${m[1]}" is not in VALID_MODES`);
+});
+
+// XDG_CONFIG_HOME is pointed at an empty tmp dir above and CAVEMAN_DEFAULT_MODE
+// is cleared, so getDefaultMode() here resolves to the hardcoded fallback —
+// the same value the python hook tests assert against.
+test('the code fallback matches the documented default', () => {
+  const documented = skill.match(/^Default:\s*\*\*(\S+?)\*\*/m)[1];
+  assert.strictEqual(
+    getDefaultMode(),
+    documented,
+    `getDefaultMode() fallback disagrees with the "Default:" line in SKILL.md`
+  );
+});
+
+test('every documented level has its own per-turn reminder', () => {
+  const missing = levels.filter((l) => !MODE_REMINDERS[l]);
+  assert.deepStrictEqual(missing, [], `levels with no MODE_REMINDERS entry: ${missing.join(', ')}`);
+});
+
+// The bug this guards: a single reminder phrased for `full` told the model to
+// drop articles on every turn, while lite/precise/ste200 all keep them. The
+// per-turn text won by recency and silently overrode the SessionStart ruleset.
+test('article-keeping levels are never told to drop articles', () => {
+  const keepsArticles = ['lite', 'precise', 'ste200'];
+  const offenders = keepsArticles.filter((l) => /drop\s+articles/i.test(reminderFor(l)));
+  assert.deepStrictEqual(offenders, [], `reminder contradicts the level: ${offenders.join(', ')}`);
+});
+
+test('article-dropping levels still say so', () => {
+  for (const l of ['full', 'ultra']) {
+    assert.ok(/drop\s+articles/i.test(reminderFor(l)), `${l} reminder lost its drop-articles rule`);
+  }
+});
+
+test('the wenyan alias resolves to the wenyan-full reminder', () => {
+  assert.strictEqual(reminderFor('wenyan'), MODE_REMINDERS['wenyan-full']);
 });
 
 test('every documented level has a worked example line', () => {
