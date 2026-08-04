@@ -114,7 +114,21 @@ test('article-dropping levels still say so', () => {
 });
 
 test('the wenyan alias resolves to the wenyan-full reminder', () => {
-  assert.strictEqual(reminderFor('wenyan'), MODE_REMINDERS['wenyan-full']);
+  assert.ok(reminderFor('wenyan').startsWith(MODE_REMINDERS['wenyan-full']));
+});
+
+// The intensity rules govern sentence construction, not content selection, so
+// chit-chat survives them as whole well-formed sentences. Every level carries
+// the content rule.
+test('every level reminder forbids volunteered asides', () => {
+  const offenders = Object.keys(MODE_REMINDERS)
+    .concat('wenyan')
+    .filter((l) => !/Answer only what was asked/.test(reminderFor(l)));
+  assert.deepStrictEqual(offenders, [], `reminder missing the no-asides rule: ${offenders.join(', ')}`);
+});
+
+test('an unknown level still gets the no-asides rule', () => {
+  assert.match(reminderFor('not-a-level'), /Answer only what was asked/);
 });
 
 test('every documented level has a worked example line', () => {

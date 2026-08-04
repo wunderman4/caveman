@@ -36,6 +36,16 @@ const VALID_MODES = [
 // SessionStart injects it once; this fires on every user message, so it carries
 // the level's headline rules only. Injecting a whole intensity row here would
 // cost more tokens per turn than caveman saves.
+// Appended to every reminder. The intensity rules govern how a sentence is
+// built; none of them govern whether it belongs. Without this, filler migrates
+// out of adjectives and into whole grammatical sentences — a volunteered aside,
+// a closing "one thing to watch", a line reassuring the user the work is
+// correct, a narration of the active register. Each one passes the compression
+// check sentence by sentence, so only a content rule catches them.
+const NO_ASIDES =
+  'Answer only what was asked, then stop: no asides, no closing tails, ' +
+  'no reassurance about your own work, no narrating the register.';
+
 const MODE_REMINDERS = {
   lite:
     'Drop filler and hedging. Keep articles and full sentences.',
@@ -68,7 +78,7 @@ const MODE_REMINDERS = {
 // new level added to VALID_MODES without a reminder still reinforces something.
 function reminderFor(mode) {
   const label = mode === 'wenyan' ? 'wenyan-full' : mode;
-  return MODE_REMINDERS[label] || MODE_REMINDERS.full;
+  return (MODE_REMINDERS[label] || MODE_REMINDERS.full) + ' ' + NO_ASIDES;
 }
 
 function getConfigDir() {
