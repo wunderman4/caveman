@@ -96,8 +96,9 @@ would be cargo-culting a standard built for a different reader.
 - `src/hooks/caveman-config.js` — added `'ste200'` to `VALID_MODES`, the
   whitelist governing mode selection, flag-file persistence, and `readFlag`.
   Without it the mode is rejected everywhere and silently falls back. The
-  default stays `precise`; STE200 is opt-in via `/caveman ste200`,
-  `CAVEMAN_DEFAULT_MODE=ste200`, or `defaultMode` in a config file.
+  fallback started as `precise` while STE200 was on trial, and became `ste200`
+  once the level proved out. `precise` stays reachable via `/caveman precise`,
+  `CAVEMAN_DEFAULT_MODE=precise`, or `defaultMode` in a config file.
 - `src/hooks/caveman-activate.js` — fallback ruleset switch hint. Defensive
   only; the main path reads `SKILL.md`.
 - `src/hooks/caveman-statusline.sh` and `.ps1` — added `ste200` **and**
@@ -140,8 +141,9 @@ Ran the branch's `caveman-activate.js` in an isolated `CLAUDE_CONFIG_DIR` with
 - Injected ruleset carried the `ste200` table row and both `ste200` examples,
   and no row or example for any other level
 - `caveman-statusline.sh` against that flag rendered `[CAVEMAN:STE200]`
-- Re-ran with no env override: still `precise`, confirming the default is
-  unchanged
+- Re-ran with no env override: `precise` at the time, which confirmed the level
+  landed without moving the default. The default became `ste200` in a later
+  commit, once the level proved out in use.
 - `tests/test_level_wiring.js`: 7 passed, 0 failed. Negative-checked by
   temporarily removing `ste200` from `VALID_MODES` and the sh whitelist — the
   test failed on exactly those two assertions and exited 1, then passed again on

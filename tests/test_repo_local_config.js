@@ -22,7 +22,7 @@ const { getDefaultMode, findRepoConfigPath } = require('../src/hooks/caveman-con
 
 // The fallback getDefaultMode() lands on with no env, no repo config, and no
 // user config. Kept as a constant so a default change is one edit, not four.
-const DEFAULT_MODE = 'precise';
+const DEFAULT_MODE = 'ste200';
 
 let passed = 0;
 let failed = 0;

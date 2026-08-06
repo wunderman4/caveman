@@ -30,7 +30,7 @@ TRACKER = REPO_ROOT / "src" / "hooks" / "caveman-mode-tracker.js"
 # src/hooks/caveman-config.js. Keep this in step with that fallback;
 # tests/test_level_wiring.js asserts the fallback and SKILL.md's documented
 # default agree.
-DEFAULT_MODE = "precise"
+DEFAULT_MODE = "ste200"
 
 
 class ModeTrackerTests(unittest.TestCase):

@@ -15,8 +15,8 @@ Display this reference card when invoked. One-shot — do NOT change mode, write
 | Mode | Trigger | What change |
 |------|---------|-------------|
 | **Lite** | `/caveman lite` | Drop filler. Keep sentence structure. |
-| **Precise** | `/caveman precise` | Drop filler. Keep articles. Named nouns, exact verbs. Zero ambiguity. Default. |
-| **STE200** | `/caveman ste200` | Precise + ASD-STE100 controls: one instruction per sentence, active voice, no noun stacks, one verb per operation. |
+| **Precise** | `/caveman precise` | Drop filler. Keep articles. Named nouns, exact verbs. Zero ambiguity. |
+| **STE200** | `/caveman ste200` | Precise + ASD-STE100 controls: one instruction per sentence, active voice, no noun stacks, one verb per operation. Default. |
 | **Full** | `/caveman full` | Drop articles, filler, pleasantries, hedging. Fragments OK. |
 | **Ultra** | `/caveman ultra` | Extreme compression. Bare fragments. Tables over prose. |
 | **Wenyan-Lite** | `/caveman wenyan-lite` | Classical Chinese style, light compression. |
@@ -44,7 +44,7 @@ Keep user's language by default. User write Portuguese → reply Portuguese cave
 
 ## Configure Default Mode
 
-Default mode = `precise`. Change it:
+Default mode = `ste200`. Change it:
 
 **Environment variable** (highest priority):
 ```bash
@@ -58,7 +58,7 @@ export CAVEMAN_DEFAULT_MODE=ultra
 
 Set `"off"` to disable auto-activation on session start. User can still activate manually with `/caveman`.
 
-Resolution: env var > repo-local config > user config file > `precise`.
+Resolution: env var > repo-local config > user config file > `ste200`.
 
 ## More
 

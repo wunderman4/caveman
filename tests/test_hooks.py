@@ -12,7 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # Mirrors the getDefaultMode() fallback in src/hooks/caveman-config.js. These
 # tests run against a temp HOME with no config, so activation resolves to it.
 # tests/test_level_wiring.js asserts the fallback and SKILL.md agree.
-DEFAULT_MODE = "precise"
+DEFAULT_MODE = "ste200"
 
 
 class HookScriptTests(unittest.TestCase):

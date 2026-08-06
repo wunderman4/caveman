@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 # Mirrors the getDefaultMode() fallback in src/hooks/caveman-config.js.
 # tests/test_level_wiring.js asserts that fallback and SKILL.md agree.
-DEFAULT_MODE = "precise"
+DEFAULT_MODE = "ste200"
 
 
 class CheckFailure(RuntimeError):
