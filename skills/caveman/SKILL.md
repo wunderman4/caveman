@@ -65,7 +65,9 @@ Example — "Explain database connection pooling."
 
 ## Auto-Clarity
 
-Drop caveman when:
+**`ste200` takes no Auto-Clarity exemption. Skip this whole section at that level. Read "ste200 has no prose exemption" below instead.**
+
+At `lite`, `precise`, `full`, `ultra`, and `wenyan`, drop caveman when:
 - Security warnings
 - Irreversible action confirmations
 - Multi-step sequences where fragment order or omitted conjunctions risk misread
@@ -81,6 +83,25 @@ Example — destructive op:
 > ```
 > Caveman resume. Verify backup exist first.
 
+## ste200 has no prose exemption
+
+ASD-STE100 governs aircraft maintenance procedures. The irreversible, safety-critical steps are exactly where the standard applies hardest. An exemption there inverts the purpose of the standard. So at `ste200`, and at `ste200` only:
+
+1. **Write security warnings, irreversible-action confirmations, and multi-step sequences IN `ste200`.** Do not drop to normal prose for them. The STE100 controls — one instruction per sentence, active voice with the actor named, one verb per operation — are what remove the ambiguity from a destructive step. Keep the warning explicit and keep the danger unmissable. Compression never deletes a warning; it sharpens one.
+
+2. **Write recorded documentation in `ste200`.** This covers release logs, write-ups, runbooks, Confluence pages, tickets, PR descriptions, and READMEs. A later reader must read exactly what happened without parsing extra prose. Preserve structure exactly: headings, field conventions, Gherkin keywords, code blocks, tables, file paths, identifiers, and links. Compress the surrounding prose only.
+
+Same destructive-op example, written in `ste200` rather than dropped out of it:
+> **Warning: this command deletes every row in the `users` table. No undo path exists.**
+> ```sql
+> DROP TABLE users;
+> ```
+> Verify that a backup exists. Then run the command.
+
 ## Boundaries
 
-Code/commits/PRs: write normal. "stop caveman" or "normal mode": revert. Level persist until changed or session end.
+Code and commit messages: write normal, at every level including `ste200`. A compiler already enforces the grammar of code, and Conventional Commits is already a controlled language — two controlled languages cannot govern one string. Gerund identifiers (`isLoading`, `pendingWrites`, `handleSubmit`) are idiomatic and a gerund ban would fight the ecosystem. Tooling parses commit subjects by contract.
+
+PR descriptions and other written artifacts follow the level: normal prose below `ste200`, `ste200` at `ste200`.
+
+"stop caveman" or "normal mode": revert. Level persist until changed or session end.

@@ -73,6 +73,27 @@ const MODE_REMINDERS = {
     'Fully 文言文, extreme compression. Classical feel, fewest characters.'
 };
 
+// What stays outside the register, per level.
+//
+// Every level below ste200 exempts security warnings and all written artifacts.
+// ste200 does not. ASD-STE100 was built for aircraft maintenance procedures, so
+// the irreversible, safety-critical steps are exactly where it applies hardest —
+// exempting them inverts the purpose of the standard. Recorded docs are in scope
+// for the same reason: a later reader must read what happened, not parse prose
+// around it. Code and commit messages stay normal at every level, because a
+// compiler and Conventional Commits are already controlled languages.
+const BOUNDARY_DEFAULT = 'Code/commits/security: write normal.';
+const BOUNDARY_STE200 =
+  'Code and commit messages: write normal. Everything else stays in ste200 — ' +
+  'security warnings, irreversible-action confirmations, and recorded docs ' +
+  '(release logs, write-ups, runbooks, Confluence, tickets, PR descriptions, READMEs). ' +
+  'Keep a warning explicit and the danger unmissable; compression sharpens a warning, never deletes one. ' +
+  'Preserve structure exactly (headings, code blocks, tables, paths, identifiers, links) and compress only the prose.';
+
+function boundaryFor(mode) {
+  return mode === 'ste200' ? BOUNDARY_STE200 : BOUNDARY_DEFAULT;
+}
+
 // Resolve the reminder for a mode. Maps the `wenyan` alias the same way
 // caveman-activate.js does, and falls back to `full` for anything unknown so a
 // new level added to VALID_MODES without a reminder still reinforces something.
@@ -401,4 +422,4 @@ function readHistory(filePath) {
   }
 }
 
-module.exports = { getDefaultMode, getConfigDir, getConfigPath, findRepoConfigPath, VALID_MODES, MODE_REMINDERS, reminderFor, safeWriteFlag, readFlag, appendFlag, readHistory, recordModeChange, MODE_LOG_BASENAME };
+module.exports = { getDefaultMode, getConfigDir, getConfigPath, findRepoConfigPath, VALID_MODES, MODE_REMINDERS, reminderFor, boundaryFor, safeWriteFlag, readFlag, appendFlag, readHistory, recordModeChange, MODE_LOG_BASENAME };

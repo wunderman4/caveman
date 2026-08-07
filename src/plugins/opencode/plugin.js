@@ -88,6 +88,14 @@ function opencodeConfigDir() {
 const flagPath = path.join(opencodeConfigDir(), '.caveman-active');
 
 function reinforcementLine(mode) {
+  if (mode === 'ste200') {
+    return 'CAVEMAN MODE ACTIVE (ste200). ' +
+      'Drop filler and hedging. KEEP articles. One instruction per sentence. ' +
+      'Active voice with the actor named. No gerund as a modifier. ' +
+      'Code and commit messages: write normal. Everything else stays in ste200 — ' +
+      'security warnings, irreversible-action confirmations, and recorded docs. ' +
+      'Preserve structure; compress only the prose.';
+  }
   return 'CAVEMAN MODE ACTIVE (' + mode + '). ' +
     'Drop articles/filler/pleasantries/hedging. Fragments OK. ' +
     'Code/commits/security: write normal.';
